@@ -324,15 +324,7 @@
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyCp7NikEl0GTZJEpP5lV4mIghQMTVpAI8Y",
-    authDomain: "route5.firebaseapp.com",
-    projectId: "route5",
-    storageBucket: "route5.firebasestorage.app",
-    messagingSenderId: "42395810648",
-    appId: "1:42395810648:web:d75c5a6bedc4e049a1832d",
-    measurementId: "G-0277XNKDEF"
-    const firebaseConfig = {
-  apiKey: "AIzaSyCp7NikEl0GTZJEpP5lV4mIghQMTVpAI8Y",
+  apiKey: "AIzaSyCp7NikEl0GTZJEpP51V4mIghQMTVpAI8Y",
   authDomain: "route5.firebaseapp.com",
   projectId: "route5",
   storageBucket: "route5.firebasestorage.app",
@@ -341,14 +333,27 @@
   measurementId: "G-0277XNKDEF"
 };
 
-// Initialize Firebase
+// Firebase 초기화
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-  };
+const auth = getAuth(app); // 이 줄이 꼭 있어야 로그인이 됩니다!
+const provider = new GoogleAuthProvider();
+const loginButton = document.querySelector('.login-button');
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+if (loginButton) {
+    loginButton.addEventListener('click', () => {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log("로그인 성공:", result.user.displayName);
+                alert(`${result.user.displayName}님 환영합니다!`);
+                // 로그인 화면 숨기기
+                document.getElementById('loginScreen').classList.remove('is-active');
+            })
+            .catch((error) => {
+                console.error("로그인 실패:", error.message);
+            });
+    });
+}
+ 
 </script> 
   </body>
 </html>
