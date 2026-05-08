@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="혼자인 사람들을 위한 픽셀 루트 앱, ROUTE5"
+    />
+    <title>ROUTE5</title>
+    <link rel="stylesheet" href="./src/main/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell" aria-label="ROUTE5 루트 앱">
+      <header class="topbar">
+        <button
+          class="icon-button"
+          id="profileButton"
+          type="button"
+          aria-label="메뉴"
+          aria-expanded="false"
+          aria-controls="profileMenu"
+        >
+          <span aria-hidden="true">☰</span>
+        </button>
+        <a class="brand-mark" href="./index.html" aria-label="ROUTE5 홈">
+          <span>ROUTE5</span>
+        </a>
+        <button class="icon-button" id="backButton" type="button" aria-label="뒤로가기">
+          <span aria-hidden="true">←</span>
+        </button>
+        <button
+          class="icon-button backpack-button"
+          id="inventoryButton"
+          type="button"
+          aria-label="루티 배낭"
+          aria-expanded="false"
+          aria-controls="inventoryPanel"
+        >
+          <span class="backpack-icon" aria-hidden="true"></span>
+        </button>
+      </header>
+
+      <nav class="profile-menu" id="profileMenu" aria-label="내정보 메뉴" hidden>
+        <p class="profile-status" id="profileStatus">로그아웃 상태</p>
+        <div class="profile-menu-list" id="profileMenuList"></div>
+      </nav>
+
+      <section class="inventory-panel" id="inventoryPanel" aria-label="루티 배낭" hidden>
+        <div class="inventory-head">
+          <div>
+            <p class="inventory-kicker">ROUTIE BAG</p>
+            <h2>루티 아이템</h2>
+          </div>
+          <p class="inventory-summary" id="inventorySummary">루트를 완료하면 아이템이 생겨요.</p>
+        </div>
+        <div class="inventory-list" id="inventoryList"></div>
+      </section>
+
+      <section class="test-screen mood-screen is-active" id="today" data-screen="mood">
+        <div class="type-hero">
+          <h1>오늘 너의 형태는?</h1>
+          <p class="intro-copy">지금의 기분을 하나 골라줘. 선택한 형태에 맞춰 오늘의 루트를 만들게.</p>
+        </div>
+
+        <div class="mood-grid" id="moodGrid" role="radiogroup" aria-label="오늘의 형태"></div>
+
+        <div class="action-bar">
+          <p class="selection-line" id="selectionLine">아직 형태를 고르지 않았어요.</p>
+          <button class="primary-action" id="nextButton" type="button" disabled>NEXT</button>
+        </div>
+      </section>
+
+      <section class="test-screen detail-screen" id="details" data-screen="details" hidden>
+        <div class="type-hero">
+          <h1>좀 더 너의 형태를 알려줘!</h1>
+          <p class="intro-copy">숫자보다 감각에 가깝게 골라도 좋아. 오늘의 루트가 네 리듬에 맞춰질 거야.</p>
+        </div>
+
+        <form class="detail-form" id="detailForm">
+          <section class="detail-group" aria-labelledby="transportTitle">
+            <div class="group-heading">
+              <h2 id="transportTitle">이동수단은?</h2>
+              <p>오늘 몸이 편한 방식을 골라줘.</p>
+            </div>
+            <div class="choice-grid" role="radiogroup" aria-label="이동수단">
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="transport" data-value="걷기">걷기</button>
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="transport" data-value="자동차">자동차</button>
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="transport" data-value="대중교통">대중교통</button>
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="transport" data-value="기차">기차</button>
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="transport" data-value="비행기">비행기</button>
+            </div>
+          </section>
+
+          <section class="detail-group" aria-labelledby="distanceTitle">
+            <div class="group-heading">
+              <h2 id="distanceTitle">이동거리는?</h2>
+              <p>내 위치 기준으로 어디까지 열어둘까?</p>
+            </div>
+            <label class="range-control">
+              <span class="range-value"><span id="distanceValue">10km</span></span>
+              <input id="distanceRange" name="distance" type="range" min="0" max="100" step="1" value="70" />
+              <span class="range-scale">
+                <span>0m</span>
+                <span>10km</span>
+                <span>50km</span>
+              </span>
+            </label>
+          </section>
+
+          <section class="detail-group" aria-labelledby="companyTitle">
+            <div class="group-heading">
+              <h2 id="companyTitle">함께할사람은?</h2>
+              <p>혼자의 밀도도, 같이 있는 리듬도 다 좋아.</p>
+            </div>
+            <div class="choice-grid compact" role="radiogroup" aria-label="함께할 사람">
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="company" data-value="혼자하는게 좋아">혼자하는게 좋아</button>
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="company" data-value="둘이다니고싶어">둘이다니고싶어</button>
+              <button class="choice-option" type="button" role="radio" aria-checked="false" data-group="company" data-value="셋이상이 좋아">셋이상이 좋아</button>
+            </div>
+          </section>
+
+          <section class="detail-group" aria-labelledby="budgetTitle">
+            <div class="group-heading">
+              <h2 id="budgetTitle">비용은?</h2>
+              <p>오늘의 마음이 부담스럽지 않을 만큼만.</p>
+            </div>
+            <label class="range-control">
+              <span class="range-value"><span id="budgetValue">50,000</span>원</span>
+              <input id="budgetRange" name="budget" type="range" min="0" max="500000" step="10000" value="50000" />
+              <span class="range-scale">
+                <span>0원</span>
+                <span>50만원</span>
+              </span>
+            </label>
+          </section>
+
+          <section class="detail-group" aria-labelledby="hobbyTitle">
+            <div class="group-heading">
+              <h2 id="hobbyTitle">너가 좋아하는 것을 선택해줘!</h2>
+              <p>오늘 끌리는 걸 골라줘. 여러 개 골라도 좋아.</p>
+            </div>
+            <div class="hobby-choice-grid" id="hobbyChoices" role="group" aria-label="취미 선택"></div>
+          </section>
+
+          <div class="route-action">
+            <p class="selection-line" id="detailSummary">선택한 정보로 오늘의 루트를 찾을게요.</p>
+            <button class="primary-action find-route-action" id="findRouteButton" type="submit">오늘의 루트 찾기</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="test-screen route-screen" id="routeResults" data-screen="routes" hidden>
+        <div class="route-hero">
+          <p class="route-count" id="routeCount">1/5</p>
+          <h1>TODAY'S ROUTE</h1>
+          <p class="route-summary" id="routeSummary"></p>
+        </div>
+
+        <ol class="route-list" id="routeList" aria-label="오늘의 루트 장소"></ol>
+
+        <section class="route-map" id="routeMap" aria-label="가는방법"></section>
+
+        <div class="route-action">
+          <button class="primary-action route-cycle-action" id="nextRouteButton" type="button">
+            다른루트 보기 1/5
+          </button>
+          <button class="primary-action route-execute-action" id="executeRouteButton" type="button">
+            이 루트로 실행
+          </button>
+        </div>
+      </section>
+
+      <section class="test-screen execution-screen" id="routeExecution" data-screen="execution" hidden>
+        <div class="route-hero">
+          <h1>ROUTE RUN</h1>
+          <div class="execution-mini-map" id="executionMiniMap" aria-label="루트 실행 지도"></div>
+          <p class="route-summary" id="executionSummary"></p>
+          <p class="execution-state" id="executionDoneText">사진 1장, 한줄평, 별점을 남기면 장소가 완료돼요.</p>
+        </div>
+
+        <ol class="execution-list" id="executionList" aria-label="실행할 미션 목록"></ol>
+
+        <div class="route-action execution-actions">
+          <div class="route-completion-row">
+            <div class="route-rating-control" id="routeRatingControl" role="radiogroup" aria-label="장소별 별점 평균"></div>
+            <button class="primary-action route-complete-action" id="completeRouteButton" type="button" disabled>
+              오늘 루트 완료
+            </button>
+          </div>
+          <button class="primary-action routebook-view-action" id="viewRouteBookButton" type="button">
+            내 루트북 보기
+          </button>
+        </div>
+      </section>
+
+      <section class="test-screen routebook-screen" id="routeBook" data-screen="routebook" hidden>
+        <div class="route-hero routebook-hero">
+          <h1>ROUTEBOOK</h1>
+          <p class="route-summary" id="routeBookSummary">오늘 실행한 루트를 모아둘게요.</p>
+        </div>
+
+        <section class="routebook-panel routebook-today" aria-labelledby="routeBookTodayTitle">
+          <div class="routebook-section-heading">
+            <h2 id="routeBookTodayTitle">오늘 실행한 루트</h2>
+            <p>오늘 다녀온 장소를 먼저 확인하고, 마음에 들면 루트북에 저장해요.</p>
+          </div>
+          <div class="routebook-today-card" id="routeBookToday"></div>
+        </section>
+
+        <section class="routebook-panel routebook-saved" aria-labelledby="routeBookSavedTitle">
+          <div class="routebook-section-heading">
+            <h2 id="routeBookSavedTitle">저장된 루트</h2>
+            <p>저장된 루트를 수정하거나 삭제할 수 있어요.</p>
+          </div>
+          <ol class="routebook-saved-list" id="routeBookSavedList"></ol>
+        </section>
+
+        <div class="route-action routebook-super-action">
+          <button class="primary-action super-route-action" id="superRouteButton" type="button">
+            루티룸 보기
+          </button>
+        </div>
+      </section>
+
+      <section class="test-screen louterbook-screen" id="louterBook" data-screen="louterbook" hidden>
+        <div class="route-hero louterbook-hero">
+          <h1>ROUTERBOOK</h1>
+          <p class="route-summary" id="louterBookSummary">다른 루터들이 공개한 루트를 둘러봐요.</p>
+        </div>
+
+        <section class="louterbook-panel" aria-labelledby="louterBookTitle">
+          <div class="routebook-section-heading">
+            <h2 id="louterBookTitle">루터북보기</h2>
+            <p>대표 루트를 눌러서 코멘트와 사진으로 정리된 정보를 확인해요.</p>
+          </div>
+          <div class="louterbook-list" id="louterBookList"></div>
+        </section>
+      </section>
+
+      <section class="test-screen looty-room-screen" id="lootyRoom" data-screen="lootyroom" hidden>
+        <div class="route-hero looty-room-hero">
+          <h1>ROUTIE ROOM</h1>
+          <p class="route-summary" id="lootyRoomSummary">루티가 지내는 방이에요.</p>
+        </div>
+
+        <section class="looty-room-panel" aria-labelledby="lootyRoomTitle">
+          <div class="looty-room-window" id="lootyRoomWindow">
+            <div class="looty-room-wall" aria-hidden="true"></div>
+            <div class="looty-room-floor" aria-hidden="true"></div>
+            <div class="looty-room-character" id="lootyRoomCharacter"></div>
+          </div>
+
+          <div class="looty-room-dashboard">
+            <h2 class="visually-hidden" id="lootyRoomTitle">루티룸</h2>
+            <dl class="looty-room-stats">
+              <div>
+                <dt>나이</dt>
+                <dd id="lootyRoomAge">1살</dd>
+              </div>
+              <div>
+                <dt>다음나이</dt>
+                <dd id="lootyRoomNextAge">5개 남음</dd>
+              </div>
+              <div>
+                <dt>완료계획</dt>
+                <dd id="lootyRoomPlans">0개</dd>
+              </div>
+            </dl>
+            <form class="looty-name-form" id="lootyNameForm">
+              <label>
+                <span>루티 이름짓기</span>
+                <input id="lootyNameInput" type="text" maxlength="16" placeholder="루티 이름" />
+              </label>
+              <button class="primary-action looty-name-save" type="submit">저장</button>
+            </form>
+            <button class="primary-action looty-room-bag" id="lootyRoomBagButton" type="button">
+              아이템가방
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <div class="photo-modal" id="photoModal" hidden>
+        <button class="photo-modal-backdrop" id="photoModalBackdrop" type="button" aria-label="사진 닫기"></button>
+        <section class="photo-modal-panel" role="dialog" aria-modal="true" aria-labelledby="photoModalTitle">
+          <button class="photo-modal-close" id="photoModalClose" type="button" aria-label="사진 닫기">×</button>
+          <img id="photoModalImage" src="" alt="" />
+          <div class="photo-modal-info">
+            <p id="photoModalTitle"></p>
+            <div class="photo-modal-links">
+              <a id="photoNaverLink" href="#" target="_blank" rel="noreferrer">네이버 이미지</a>
+              <a id="photoGoogleLink" href="#" target="_blank" rel="noreferrer">구글 이미지</a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="route-notice-modal" id="routeNoticeModal" hidden>
+        <button class="route-notice-backdrop" id="routeNoticeBackdrop" type="button" aria-label="알림 닫기"></button>
+        <section class="route-notice-panel" role="dialog" aria-modal="true" aria-labelledby="routeNoticeTitle">
+          <button class="route-notice-close" id="routeNoticeClose" type="button" aria-label="알림 닫기">×</button>
+          <div class="route-notice-reward" id="routeNoticeReward" hidden></div>
+          <div class="route-notice-copy">
+            <p class="route-notice-kicker" id="routeNoticeKicker">ROUTE5</p>
+            <h2 id="routeNoticeTitle">완료</h2>
+            <div id="routeNoticeMessage" class="route-notice-message">루트가 완료됐어요.</div>
+          </div>
+          <button class="primary-action route-notice-action" id="routeNoticeAction" type="button">확인</button>
+        </section>
+      </div>
+    </main>
+
+    <script src="./src/features/mood-intake/moods.js" defer></script>
+    <script src="./src/features/routes/route-candidates.js" defer></script>
+    <script src="./src/main/app.js" defer></script>
+  </body>
+</html>

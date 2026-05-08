@@ -1,0 +1,32 @@
+{
+  "requestSummary": "슬픈 오늘, 미술을 좋아하고 혼자 있고 싶은 너에게 도보를 이용해서 1km 안에 10000원으로 할 수 있는 루트를 추천해줄게.",
+  "routes": [
+    {
+      "id": "route_jangchung_sad_art_walk_001",
+      "title": "조용히 걷고 보는 장충 하루",
+      "mode": "ai",
+      "index": 1,
+      "total": 1,
+      "estimatedCostKRW": 7000,
+      "area": "장충동",
+      "stops": [
+        {
+          "time": "11:00",
+          "placeId": "place_jangchung_park",
+          "placeName": "장충단공원",
+          "description": "푸른 나무에 둘러싸여 천천히 걷기",
+          "mapKeyword": "장충단공원",
+          "reviewUrl": "https://example.com/reviews/place_jangchung_park"
+        },
+        {
+          "time": "13:00",
+          "placeId": "place_jangchung_gallery",
+          "placeName": "장충동 갤러리 카페",
+          "description": "작은 작품을 보며 쉬어가기",
+          "mapKeyword": "장충동 갤러리 카페",
+          "reviewUrl": "https://example.com/reviews/place_jangchung_gallery"
+        }
+      ]
+    }
+  ]
+}

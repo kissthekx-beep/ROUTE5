@@ -1,0 +1,13 @@
+{
+  "id": "place_jangchung_park",
+  "name": "장충단공원",
+  "area": "장충동",
+  "category": "산책",
+  "moods": ["슬픔", "우울", "차분함"],
+  "priceLevel": 0,
+  "estimatedCostKRW": 0,
+  "durationMinutes": 60,
+  "mapKeyword": "장충단공원",
+  "reviewUrl": "https://example.com/reviews/place_jangchung_park",
+  "tags": ["걷기", "조용함", "무료"]
+}

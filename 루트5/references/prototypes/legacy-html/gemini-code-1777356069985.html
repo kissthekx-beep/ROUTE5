@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROOT - 루터</title>
+    <style>
+        :root {
+            --bg-silver: #E2E2E2;
+            --neon-pink: #FF3366;
+            --acid-green: #CCFF00;
+            --dark-void: #1A1A1A;
+            --white: #FFFFFF;
+            --gray-text: #666;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #333; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+
+        .app-container {
+            width: 100%; max-width: 420px; height: 100vh;
+            background-color: var(--bg-silver); position: relative;
+            overflow: hidden; border: 2px solid var(--dark-void);
+            display: flex; flex-direction: column;
+        }
+
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 20px; transition: 0.3s; }
+        .screen.active { display: flex; }
+
+        /* 상단 바 (코인 표시) */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 2px solid var(--dark-void); margin-bottom: 10px; }
+        .coin-status { font-weight: 900; color: var(--dark-void); background: var(--white); padding: 4px 10px; border-radius: 20px; border: 2px solid var(--dark-void); font-size: 0.8rem; }
+
+        /* 루터 캐릭터 */
+        .luther-section { text-align: center; margin-bottom: 15px; flex-shrink: 0; }
+        .luther-char {
+            width: 60px; height: 60px; background: var(--dark-void); color: var(--acid-green);
+            border-radius: 18px; display: inline-flex; justify-content: center; align-items: center;
+            font-size: 2rem; font-weight: 900; transform: rotate(-5deg);
+            box-shadow: 3px 3px 0px var(--neon-pink); margin-bottom: 8px;
+        }
+        .bubble { background: var(--white); border: 2px solid var(--dark-void); padding: 10px; border-radius: 15px; font-weight: 800; font-size: 0.9rem; }
+
+        /* 스크롤 구역 */
+        .scroll-area { overflow-y: auto; flex-grow: 1; padding-bottom: 80px; }
+
+        /* 입력 폼 */
+        .input-group { margin-bottom: 15px; background: rgba(255,255,255,0.4); padding: 10px; border-radius: 12px; }
+        .input-label { font-size: 0.75rem; font-weight: 900; margin-bottom: 8px; display: block; }
+        .option-wrap { display: flex; gap: 5px; flex-wrap: wrap; }
+        .opt-btn { background: var(--white); border: 2px solid var(--dark-void); padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+        .opt-btn.active { background: var(--acid-green); box-shadow: 2px 2px 0px var(--dark-void); }
+
+        /* 결과/진행 화면 카드 */
+        .course-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 15px; text-align: center; background: var(--acid-green); padding: 10px; border: 2px solid var(--dark-void); border-radius: 10px; }
+        .place-item {
+            background: var(--white); border: 2px solid var(--dark-void);
+            border-radius: 15px; padding: 15px; display: flex; flex-direction: column; gap: 5px;
+            margin-bottom: 12px; position: relative; transition: 0.3s;
+        }
+        .place-item.checked { opacity: 0.5; background: #ddd; text-decoration: line-through; }
+
+        .item-row { display: flex; align-items: center; gap: 10px; }
+        .time-tag { background: var(--dark-void); color: white; font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; font-weight: 800; }
+        .place-name { font-weight: 900; font-size: 0.95rem; }
+
+        /* 히든 스페이스 버튼 */
+        .hidden-space-btn {
+            position: absolute; right: 10px; top: 10px;
+            background: var(--neon-pink); color: white; border: none;
+            padding: 4px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: 900;
+            cursor: pointer; box-shadow: 2px 2px 0px var(--dark-void);
+        }
+
+        /* 하단 네비 */
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: var(--bg-silver); border-top: 2px solid var(--dark-void); }
+        .main-btn { background: var(--dark-void); color: var(--acid-green); border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; }
+
+        /* 체크박스 스타일 */
+        .chk-box { width: 20px; height: 20px; cursor: pointer; accent-color: var(--dark-void); }
+
+        /* 진행도 표시 */
+        .progress-bar { width: 100%; height: 10px; background: #ccc; border-radius: 5px; margin-top: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--neon-pink); width: 0%; transition: 0.5s; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="screen-home" class="screen active">
+            <div class="top-bar">
+                <div class="coin-status">🪙 <span id="user-coin">500</span></div>
+            </div>
+            <div class="luther-section">
+                <div class="luther-char">R</div>
+                <div class="bubble">"안녕 지수! 어떤 하루를 루트해줄까?"</div>
+            </div>
+            <div class="scroll-area">
+                <div class="input-group">
+                    <span class="input-label">Q1. 기분</span>
+                    <div class="option-wrap">
+                        <button class="opt-btn" onclick="setVal(this, 'mood', '행복')">😊 행복</button>
+                        <button class="opt-btn" onclick="setVal(this, 'mood', '싱숭생숭')">🌀 싱숭생숭</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <span class="input-label">Q2. 함께할 사람</span>
+                    <div class="option-wrap">
+                        <button class="opt-btn" onclick="setVal(this, 'who', '나 혼자')">👤 나 혼자</button>
+                        <button class="opt-btn" onclick="setVal(this, 'who', '친구와')">👥 친구와</button>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <button class="main-btn" onclick="startSearch()">루트 찾기</button>
+            </div>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <div class="top-bar">
+                <div class="coin-status">🪙 <span class="coin-val">500</span></div>
+                <div style="font-weight:900; font-size:0.8rem;" id="step-info">1 / 5</div>
+            </div>
+            <div id="res-title" class="course-title"></div>
+            <div id="result-list" class="scroll-area"></div>
+            <div class="bottom-nav" style="display:flex; gap:10px;">
+                <button class="main-btn" style="flex:1; background:#666;" onclick="nextCourse()">패스</button>
+                <button class="main-btn" style="flex:2;" onclick="selectThisCourse()">이 루트로 시작!</button>
+            </div>
+        </div>
+
+        <div id="screen-doing" class="screen">
+            <div class="top-bar">
+                <div class="coin-status">🪙 <span class="coin-val">500</span></div>
+                <div style="font-weight:900; font-size:0.8rem; color:var(--neon-pink)">LIVE 진행중</div>
+            </div>
+            <div id="doing-title" class="course-title" style="background:var(--dark-void); color:white;"></div>
+            <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
+            <div id="doing-list" class="scroll-area" style="margin-top:15px;"></div>
+            <div class="bottom-nav">
+                <button class="main-btn" style="background:var(--neon-pink); color:white;" onclick="location.reload()">오늘의 루트 완료!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userCoin = 500;
+        let config = { mood: '', who: '' };
+        let currentIdx = 0;
+        let selectedCourse = null;
+
+        const allCourseSets = [
+            {
+                title: "1 ROOT: 약수 감성 산책",
+                items: [
+                    { time: "12:00", name: "약수동 갤러리", detail: "MZ 작가 전시", loc: "중구 다산로" },
+                    { time: "14:00", name: "금돼지식당", detail: "로컬 맛집 점심", loc: "신당동" },
+                    { time: "15:30", name: "장충단공원", detail: "가벼운 산책", loc: "장충동" },
+                    { time: "17:00", name: "커피바", detail: "필터 커피 한 잔", loc: "약수역 인근" },
+                    { time: "19:00", name: "독립서점", detail: "기록 남기기", loc: "청구동" }
+                ]
+            },
+            {
+                title: "2 ROOT: 성수 힙 투어",
+                items: [
+                    { time: "11:00", name: "포인트오브뷰", detail: "문구 쇼핑", loc: "성수동" },
+                    { time: "13:00", name: "우동 가조쿠", detail: "깔끔한 면 요리", loc: "성수역" },
+                    { time: "15:00", name: "서울숲", detail: "피크닉 & 사색", loc: "서울숲" },
+                    { time: "17:00", name: "대림창고", detail: "거대 전시 카페", loc: "성수동2가" },
+                    { time: "19:00", name: "심야식당", detail: "혼술하기 좋은 곳", loc: "건대 입구" }
+                ]
+            }
+            // ... 나머지 데이터 동일 구성
+        ];
+
+        function setVal(btn, key, val) {
+            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            config[key] = val;
+        }
+
+        function updateCoinDisplay() {
+            document.querySelectorAll('.coin-val').forEach(el => el.innerText = userCoin);
+            document.getElementById('user-coin').innerText = userCoin;
+        }
+
+        function startSearch() {
+            document.getElementById('screen-home').classList.remove('active');
+            document.getElementById('screen-result').classList.add('active');
+            renderResult();
+        }
+
+        function renderResult() {
+            const course = allCourseSets[currentIdx];
+            document.getElementById('res-title').innerText = course.title;
+            document.getElementById('step-info').innerText = `${currentIdx + 1} / 5`;
+            let html = '';
+            course.items.forEach(item => {
+                html += `<div class="place-item">
+                    <div class="item-row"><span class="time-tag">${item.time}</span><span class="place-name">${item.name}</span></div>
+                    <div style="font-size:0.75rem; color:var(--gray-text);">${item.detail} | 📍 ${item.loc}</div>
+                </div>`;
+            });
+            document.getElementById('result-list').innerHTML = html;
+        }
+
+        function nextCourse() {
+            currentIdx = (currentIdx + 1) % allCourseSets.length;
+            renderResult();
+        }
+
+        function selectThisCourse() {
+            selectedCourse = JSON.parse(JSON.stringify(allCourseSets[currentIdx])); // 복사
+            document.getElementById('screen-result').classList.remove('active');
+            document.getElementById('screen-doing').classList.add('active');
+            document.getElementById('doing-title').innerText = selectedCourse.title;
+            renderDoing();
+        }
+
+        function renderDoing() {
+            let html = '';
+            selectedCourse.items.forEach((item, i) => {
+                const isChecked = item.checked ? 'checked' : '';
+                html += `<div class="place-item ${isChecked}">
+                    <button class="hidden-space-btn" onclick="changePlace(${i})">🔄 히든 스페이스 (-100)</button>
+                    <div class="item-row">
+                        <input type="checkbox" class="chk-box" ${item.checked ? 'checked' : ''} onchange="toggleCheck(${i})">
+                        <span class="time-tag">${item.time}</span>
+                        <span class="place-name">${item.name}</span>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--gray-text);">${item.detail} | 📍 ${item.loc}</div>
+                </div>`;
+            });
+            document.getElementById('doing-list').innerHTML = html;
+            updateProgress();
+        }
+
+        function toggleCheck(idx) {
+            selectedCourse.items[idx].checked = !selectedCourse.items[idx].checked;
+            renderDoing();
+        }
+
+        function updateProgress() {
+            const total = selectedCourse.items.length;
+            const done = selectedCourse.items.filter(item => item.checked).length;
+            document.getElementById('p-fill').style.width = (done / total * 100) + '%';
+        }
+
+        function changePlace(idx) {
+            if (userCoin < 100) {
+                alert("코인이 부족합니다!");
+                return;
+            }
+            if (confirm("100코인을 사용하여 이 장소를 변경하시겠습니까?")) {
+                userCoin -= 100;
+                updateCoinDisplay();
+                // 임의의 새 장소로 변경 (예시 데이터)
+                const newPlaces = [
+                    { name: "비밀의 숲 카페", detail: "새로운 영감 장소", loc: "비공개 위치" },
+                    { name: "히든 갤러리", detail: "예상치 못한 발견", loc: "골목 어딘가" },
+                    { name: "나만 아는 맛집", detail: "히든 메뉴 추천", loc: "비밀 위치" }
+                ];
+                const rand = newPlaces[Math.floor(Math.random() * newPlaces.length)];
+                selectedCourse.items[idx].name = "🎁 " + rand.name;
+                selectedCourse.items[idx].detail = rand.detail;
+                selectedCourse.items[idx].loc = rand.loc;
+                renderDoing();
+            }
+        }
+    </script>
+</body>
+</html>

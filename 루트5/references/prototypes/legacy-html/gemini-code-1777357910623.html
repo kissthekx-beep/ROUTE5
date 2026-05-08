@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROOT - 루터 마스터 에디션</title>
+    <style>
+        :root {
+            --bg-silver: #F2F4F6;
+            --primary-blue: #3A86FF;
+            --dark-void: #1A1A1A;
+            --white: #FFFFFF;
+            --gray-text: #636E72;
+            --border: #DFE6E9;
+            --gold: #FFD700;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #E5E5E5; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+
+        .app-container {
+            width: 100%; max-width: 420px; height: 100vh;
+            background-color: var(--bg-silver); position: relative;
+            overflow: hidden; border: 1px solid var(--border);
+            display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* 상단 바 */
+        .global-header {
+            padding: 20px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--white); border-bottom: 1px solid var(--border); z-index: 10;
+        }
+        .user-badge { font-weight: 800; font-size: 0.9rem; color: var(--dark-void); background: #F1F3F5; padding: 4px 10px; border-radius: 8px; }
+        .coin-box { font-weight: 800; font-size: 0.9rem; color: var(--primary-blue); }
+
+        .screen { position: absolute; top: 65px; left: 0; width: 100%; height: calc(100% - 65px); display: none; flex-direction: column; padding: 20px; }
+        .screen.active { display: flex; }
+
+        .scroll-section { overflow-y: auto; flex-grow: 1; padding-bottom: 120px; }
+        .section-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; color: var(--dark-void); }
+
+        /* 탭 UI */
+        .tab-group { display: flex; background: #E9ECEF; border-radius: 14px; padding: 4px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; border: none; padding: 10px; border-radius: 10px; font-weight: 800; cursor: pointer; background: none; color: var(--gray-text); transition: 0.2s; }
+        .tab-btn.active { background: var(--white); color: var(--dark-void); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* 질문 카드 */
+        .input-card { background: var(--white); padding: 16px; border-radius: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .input-label { font-size: 0.75rem; font-weight: 800; color: var(--gray-text); margin-bottom: 10px; display: block; }
+        .q-text { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: block; }
+        
+        .option-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+        .opt-btn { background: #F8F9FA; border: 1px solid var(--border); padding: 10px 14px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; cursor: pointer; color: var(--gray-text); }
+        .opt-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+
+        /* 장소 카드 */
+        .place-item { background: var(--white); border-radius: 18px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); position: relative; }
+        .place-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .time-tag { background: var(--dark-void); color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; }
+        .place-name { font-weight: 800; font-size: 1.05rem; color: var(--dark-void); }
+        
+        .info-btn-group { display: flex; gap: 8px; }
+        .info-btn { flex: 1; background: #F8F9FA; border: 1px solid var(--border); padding: 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; text-align: center; cursor: pointer; color: var(--dark-void); }
+
+        /* 마스터 꿀팁 영역 */
+        .master-tip { background: #FFF9DB; border: 2px dashed #FAB005; padding: 15px; border-radius: 16px; margin-top: 10px; display: none; }
+        .master-tip-title { font-size: 0.75rem; font-weight: 900; color: #F59F00; margin-bottom: 5px; }
+
+        /* 노선도 UI */
+        .metro-line { width: 90%; height: 3px; background: var(--dark-void); display: flex; justify-content: space-between; align-items: center; margin: 40px auto 20px auto; position: relative; }
+        .metro-station { width: 12px; height: 12px; background: white; border: 3px solid var(--primary-blue); border-radius: 50%; position: relative; }
+        .station-name { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; font-weight: 800; white-space: nowrap; color: var(--dark-void); }
+
+        /* 체크리스트 */
+        .check-box { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 50%; flex-shrink: 0; background: white; }
+        .done .check-box { background: var(--primary-blue); border-color: var(--primary-blue); position: relative; }
+        .done .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: 900; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .done .place-name { text-decoration: line-through; color: var(--gray-text); }
+
+        /* 하단 버튼 */
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, var(--bg-silver) 30%); z-index: 10; }
+        .main-btn { background: var(--dark-void); color: white; border: none; padding: 18px; width: 100%; border-radius: 16px; font-size: 1rem; font-weight: 800; cursor: pointer; }
+
+        /* 팝업 */
+        .lv-popup { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .lv-popup.active { display: flex; }
+        .lv-card { background: var(--white); width: 85%; padding: 30px 20px; border-radius: 30px; text-align: center; border: 4px solid var(--primary-blue); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="lv-popup" class="lv-popup">
+            <div class="lv-card">
+                <h1 style="font-size: 3rem; margin-bottom: 10px;">🏆</h1>
+                <h2 id="popup-title" style="font-weight: 900; color: var(--dark-void); margin-bottom: 10px;">LEVEL UP!</h2>
+                <p id="popup-desc" style="font-weight: 600; color: var(--gray-text); line-height: 1.5; margin-bottom: 25px;">
+                    축하합니다! 루팅 능력이 상승했습니다.<br>
+                    <span style="color:var(--primary-blue)">+200코인 획득</span>
+                </p>
+                <button class="main-btn" style="background:var(--primary-blue); margin-bottom:10px;" onclick="registerSignature()">⭐ 이 루트 시그니처 등록</button>
+                <button class="main-btn" style="background:#F1F3F5; color:var(--gray-text);" onclick="closeLvUp()">그냥 닫기</button>
+            </div>
+        </div>
+
+        <header class="global-header">
+            <div id="user-lv" class="user-badge">LV.01</div>
+            <div class="coin-box" id="coin-display">🪙 500</div>
+        </header>
+
+        <div id="screen-home" class="screen active">
+            <h2 class="section-title">오늘의 루트 설정</h2>
+            <div class="scroll-section">
+                <div class="input-card">
+                    <span class="input-label">Q1. 루트 개수</span><span class="q-text">얼마나 탐험할까요?</span>
+                    <div class="option-wrap">
+                        <button class="opt-btn" onclick="setRouteCount(3, this)">3개 루트</button>
+                        <button class="opt-btn active" onclick="setRouteCount(5, this)">5개 루트</button>
+                    </div>
+                </div>
+                <div class="input-card">
+                    <span class="input-label">Q2. 기분</span><span class="q-text">지금 기분은?</span>
+                    <div class="option-wrap">
+                        <button class="opt-btn active" onclick="setVal(this)">😊 행복</button>
+                        <button class="opt-btn" onclick="setVal(this)">☕️ 차분함</button>
+                    </div>
+                </div>
+                <div class="input-card">
+                    <span class="input-label">Q3. 인원</span><span class="q-text">누구와 함께?</span>
+                    <div class="option-wrap"><button class="opt-btn active">👤 혼자</button><button class="opt-btn">👥 친구와</button></div>
+                </div>
+                <div class="input-card">
+                    <span class="input-label">Q4. 예산</span><span class="q-text">최대 예산은?</span>
+                    <input type="range" class="price-slider" style="width:100%" min="10000" max="100000" step="5000" value="30000" oninput="document.getElementById('price-txt').innerText = Number(this.value).toLocaleString()+'원'">
+                    <div id="price-txt" style="font-weight:800; color:var(--primary-blue); text-align:right;">30,000원</div>
+                </div>
+                <div class="input-card">
+                    <span class="input-label">Q5. 수단</span><span class="q-text">이동 수단은?</span>
+                    <div class="option-wrap"><button class="opt-btn active">👟 도보</button><button class="opt-btn">🚗 자동차</button></div>
+                </div>
+            </div>
+            <div class="bottom-nav"><button class="main-btn" onclick="showScreen('result')">루터야, 루트 부탁해!</button></div>
+        </div>
+
+        <div id="screen-result" class="screen">
+            <h2 class="section-title">어떤 루트가 좋을까요?</h2>
+            
+            <div class="tab-group">
+                <button id="tab-ai" class="tab-btn active" onclick="switchTab('ai')">🤖 AI 추천</button>
+                <button id="tab-master" class="tab-btn" onclick="switchTab('master')">⭐ 마스터 루트</button>
+            </div>
+
+            <div class="scroll-section">
+                <div id="places-container"></div>
+                
+                <div id="master-tip-area" class="master-tip">
+                    <div class="master-tip-title">👨‍🏫 마스터 '산책왕'의 꿀팁</div>
+                    <p style="font-size:0.85rem; line-height:1.4;">"이 루트는 오후 4시쯤 시작하는게 베스트예요. 리사르 커피는 스탠딩바라 회전율이 빠르니 겁먹지 말고 들어가세요!"</p>
+                </div>
+
+                <div class="metro-line" id="metro-ui"></div>
+            </div>
+            
+            <div class="bottom-nav">
+                <button id="confirm-btn" class="main-btn" onclick="confirmRoute()">이 루트로 시작하기 (무료)</button>
+            </div>
+        </div>
+
+        <div id="screen-myplan" class="screen">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 class="section-title" style="margin:0;">오늘의 진행도</h2>
+                <div id="progress-text" style="font-weight:900; color:var(--primary-blue);">0%</div>
+            </div>
+            <div class="scroll-section" id="my-plan-list"></div>
+            <div class="bottom-nav"><button class="main-btn" onclick="finishDay()">오늘 하루 마무리</button></div>
+        </div>
+    </div>
+
+    <script>
+        const aiSpots = ["릴리브", "하늘이네", "장충단공원", "리사르", "금돼지식당"];
+        const masterSpots = ["메일룸", "약수순대", "커피그래", "응봉산야경", "독립서점"];
+        
+        let currentMode = 'ai';
+        let routeCount = 5;
+        let myPlan = [];
+        let userLv = 1;
+        let userCoin = 500;
+
+        function setRouteCount(count, btn) {
+            setVal(btn);
+            routeCount = count;
+        }
+
+        function setVal(btn) {
+            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            if(id === 'result') renderResult();
+        }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + mode).classList.add('active');
+            
+            const btn = document.getElementById('confirm-btn');
+            const tip = document.getElementById('master-tip-area');
+            
+            if(mode === 'master') {
+                btn.innerText = "마스터 루트 확정 (50🪙)";
+                tip.style.display = 'block';
+            } else {
+                btn.innerText = "이 루트로 시작하기 (무료)";
+                tip.style.display = 'none';
+            }
+            renderResult();
+        }
+
+        function renderResult() {
+            const spots = currentMode === 'ai' ? aiSpots.slice(0, routeCount) : masterSpots.slice(0, routeCount);
+            let html = ''; let metro = '';
+            
+            spots.forEach((s, i) => {
+                html += `<div class="place-item">
+                    <div class="place-header"><div class="time-tag">${12+i}:00</div><div class="place-name">${s}</div></div>
+                    <div class="info-btn-group">
+                        <div class="info-btn" onclick="window.open('https://m.map.naver.com/search2/search.naver?query=${s}')">📍 위치</div>
+                        <div class="info-btn" onclick="window.open('https://m.search.naver.com/search.naver?query=${s}+리뷰')">⭐ 리뷰</div>
+                    </div>
+                </div>`;
+                metro += `<div class="metro-station"><span class="station-name">${s.slice(0,2)}</span></div>`;
+            });
+            document.getElementById('places-container').innerHTML = html;
+            document.getElementById('metro-ui').innerHTML = metro;
+        }
+
+        function confirmRoute() {
+            if(currentMode === 'master') {
+                if(userCoin < 50) { alert("코인이 부족합니다!"); return; }
+                userCoin -= 50;
+                document.getElementById('coin-display').innerText = "🪙 " + userCoin;
+            }
+            const spots = currentMode === 'ai' ? aiSpots.slice(0, routeCount) : masterSpots.slice(0, routeCount);
+            myPlan = spots.map(s => ({name: s, done: false}));
+            renderMyPlan();
+            showScreen('myplan');
+        }
+
+        function renderMyPlan() {
+            let html = '';
+            myPlan.forEach((item, i) => {
+                html += `<div class="place-item ${item.done ? 'done' : ''}" onclick="toggleDone(${i})" style="display:flex; flex-direction:row; align-items:center; gap:15px; cursor:pointer;">
+                    <div class="check-box"></div><div class="place-name">${item.name}</div>
+                </div>`;
+            });
+            document.getElementById('my-plan-list').innerHTML = html;
+            const percent = Math.round((myPlan.filter(p => p.done).length / myPlan.length) * 100);
+            document.getElementById('progress-text').innerText = percent + "%";
+        }
+
+        function toggleDone(i) {
+            myPlan[i].done = !myPlan[i].done;
+            renderMyPlan();
+        }
+
+        function finishDay() {
+            if (myPlan.every(p => p.done)) {
+                userLv++;
+                userCoin += 200;
+                document.getElementById('user-lv').innerText = "LV." + String(userLv).padStart(2, '0');
+                document.getElementById('coin-display').innerText = "🪙 " + userCoin;
+                document.getElementById('lv-popup').classList.add('active');
+            } else {
+                alert("아직 완료하지 않은 장소가 있습니다!");
+            }
+        }
+
+        function registerSignature() {
+            alert("축하합니다! 이 루트가 시그니처로 등록되었습니다. 이제 다른 루터가 사용할 때마다 수익이 발생합니다!");
+            closeLvUp();
+        }
+
+        function closeLvUp() {
+            document.getElementById('lv-popup').classList.remove('active');
+            showScreen('home');
+        }
+    </script>
+</body>
+</html>

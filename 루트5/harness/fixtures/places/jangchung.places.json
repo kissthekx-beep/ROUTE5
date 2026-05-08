@@ -1,0 +1,28 @@
+[
+  {
+    "id": "place_jangchung_park",
+    "name": "장충단공원",
+    "area": "장충동",
+    "category": "산책",
+    "moods": ["슬픔", "우울", "차분함"],
+    "priceLevel": 0,
+    "estimatedCostKRW": 0,
+    "durationMinutes": 60,
+    "mapKeyword": "장충단공원",
+    "reviewUrl": "https://example.com/reviews/place_jangchung_park",
+    "tags": ["걷기", "조용함", "무료"]
+  },
+  {
+    "id": "place_jangchung_gallery",
+    "name": "장충동 갤러리 카페",
+    "area": "장충동",
+    "category": "카페",
+    "moods": ["슬픔", "차분함", "그냥"],
+    "priceLevel": 1,
+    "estimatedCostKRW": 7000,
+    "durationMinutes": 70,
+    "mapKeyword": "장충동 갤러리 카페",
+    "reviewUrl": "https://example.com/reviews/place_jangchung_gallery",
+    "tags": ["카페", "미술", "조용함"]
+  }
+]

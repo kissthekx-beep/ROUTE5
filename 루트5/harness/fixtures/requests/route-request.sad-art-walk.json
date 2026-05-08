@@ -1,0 +1,10 @@
+{
+  "mood": "슬픔",
+  "partySize": "혼자",
+  "transport": "도보",
+  "maxDistanceKm": 1,
+  "budgetKRW": 10000,
+  "interests": ["미술"],
+  "area": "장충동",
+  "recommendationMode": "ai"
+}
